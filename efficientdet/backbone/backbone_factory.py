@@ -12,27 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Tests for Autoaugment."""
+"""Backbone network factory."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
-import tensorflow.compat.v1 as tf
-
-from aug import autoaugment
+from backbone import efficientnet_builder
+from backbone import efficientnet_lite_builder
 
 
-class AutoaugmentTest(tf.test.TestCase):
-
-  def test_autoaugment_policy(self):
-    # A very simple test to verify no syntax error.
-    image = tf.placeholder(tf.uint8, shape=[640, 640, 3])
-    bboxes = tf.placeholder(tf.float32, shape=[4, 4])
-    autoaugment.distort_image_with_autoaugment(image, bboxes, 'test')
-
-
-if __name__ == '__main__':
-  tf.disable_eager_execution()
-  tf.test.main()
-
+def get_model_builder(model_name):
+  """Get the model_builder module for a given model name."""
+  if model_name.startswith('efficientnet-lite'):
+    return efficientnet_lite_builder
+  elif model_name.startswith('efficientnet-b'):
+    return efficientnet_builder
+  else:
+    raise ValueError('Unknown model name {}'.format(model_name))
